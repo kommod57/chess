@@ -8,10 +8,7 @@ package chess;
  */
 public class ChessPosition {
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
+
 
     private final int row;
     private final int col;
@@ -40,5 +37,15 @@ public class ChessPosition {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

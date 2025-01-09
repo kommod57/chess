@@ -2,6 +2,9 @@ package chess;
 
 import java.util.Collection;
 
+/* not sure where to put this
+import java.util.Collection;
+
 /**
  * Represents a single chess piece
  * <p>
@@ -11,6 +14,16 @@ import java.util.Collection;
 public class ChessPiece {
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     /**

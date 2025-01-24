@@ -46,6 +46,12 @@ public class ChessBoard {
                 squares[row][column] = null;
             }
         }
+        // pawn logic
+        for (int col = 0; col < 8; col++) {
+            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+            addPiece(new ChessPosition(6, col), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+
+        }
     }
 
     @Override

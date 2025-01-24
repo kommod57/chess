@@ -64,7 +64,7 @@ public class ChessBoard {
         };
         for (int col = 0; col < 8; col++) {
             addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col]));
-            addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col]));
+            addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.BLACK, back_rows[col]));
         }
     }
 

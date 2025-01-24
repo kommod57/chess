@@ -41,16 +41,16 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        for (int row = 0; row < 8; row++) {
+        for (int row = 1; row <= 8; row++) {
             for (int column = 0; column < 8; column++) {
                 squares[row][column] = null;
             }
         }
         // pawn logic
-        for (int col = 0; col < 8; col++) {
+        for (int col = 1; col <= 8; col++) {
             addPiece(new ChessPosition(1, col),
                     new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
-            addPiece(new ChessPosition(6, col),
+            addPiece(new ChessPosition(7, col),
                     new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
 
         }
@@ -62,7 +62,7 @@ public class ChessBoard {
                 ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP,
                 ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK,
         };
-        for (int col = 0; col < 8; col++) {
+        for (int col = 1; col <= 8; col++) {
             addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col]));
             addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.BLACK, back_rows[col]));
         }

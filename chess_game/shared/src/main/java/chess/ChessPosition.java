@@ -14,7 +14,7 @@ public class ChessPosition {
     private final int col;
 
     public ChessPosition(int row, int col) {
-        if (row < 0 || col < 0 || row >= 8 || col >= 8) {
+        if (row < 1 || col < 1 || row > 8 || col > 8) {
             throw new IllegalArgumentException("Invalid row or column");
         }
         this.row = row;
@@ -26,7 +26,7 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return row;
+        return row - 1;
     }
 
     /**
@@ -34,7 +34,7 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return col;
+        return col - 1;
     }
 
     @Override

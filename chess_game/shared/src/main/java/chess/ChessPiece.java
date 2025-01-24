@@ -56,7 +56,38 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<ChessMove>();
+        // implement bishop moves (diagonal)
+        Collection<ChessMove> moves = new ArrayList<>();
+        int[][] directions = {
+                { -1, 1 },{1,-1},{1,1},{-1,-1}
+        };
+
+        for (int[] direction : directions) {
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+
+            while (true) {
+                row += direction[0];
+                col += direction[1];
+                if (row < 0 || row > 8 || col < 0 || col > 8) {
+                    break;
+                }
+
+                ChessPosition newPosition = new ChessPosition(row, col);
+                ChessPiece pieceAtTarget = board.getPiece(newPosition);
+
+                if (pieceAtTarget == null) {
+                    moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+
+                } else {
+                    if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
+                        moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                    }
+                    break;
+                }
+            }
+        }
+        return moves;
     }
 
     @Override

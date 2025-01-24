@@ -56,6 +56,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+
         // implement bishop moves (diagonal)
         Collection<ChessMove> moves = new ArrayList<>();
         int[][] directions = {
@@ -77,11 +78,11 @@ public class ChessPiece {
                 ChessPiece pieceAtTarget = board.getPiece(newPosition);
 
                 if (pieceAtTarget == null) {
-                    moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                    moves.add(new ChessMove(myPosition, newPosition, null));
 
                 } else {
                     if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
-                        moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, newPosition, null));
                     }
                     break;
                 }

@@ -48,9 +48,23 @@ public class ChessBoard {
         }
         // pawn logic
         for (int col = 0; col < 8; col++) {
-            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
-            addPiece(new ChessPosition(6, col), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+            addPiece(new ChessPosition(1, col),
+                    new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+            addPiece(new ChessPosition(6, col),
+                    new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
 
+        }
+
+        // other pieces
+        ChessPiece.PieceType[] back_rows = {
+                ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK,
+        };
+        for (int col = 0; col < 8; col++) {
+            addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col]));
+            addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col]));
         }
     }
 

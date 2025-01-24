@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Objects;
+
 /**
  * Represents moving a chess piece on a chessboard
  * <p>
@@ -47,16 +49,28 @@ public class ChessMove {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(this.startPosition, this.endPosition, this.promotionPiece);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ChessMove other = (ChessMove) obj;
+        return startPosition.equals(other.startPosition) &&
+                endPosition.equals(other.endPosition) &&
+                promotionPiece == other.promotionPiece;
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        return "ChessMove{" +
+                "startPosition=" +
+                startPosition +
+                ", endPosition=" +
+                endPosition +
+                ", promotionPiece=" +
+                promotionPiece +
+                '}';
     }
 }

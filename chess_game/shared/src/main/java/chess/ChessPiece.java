@@ -69,7 +69,7 @@ public class ChessPiece {
             while (true) {
                 row += direction[0];
                 col += direction[1];
-                if (row < 0 || row > 8 || col < 0 || col > 8) {
+                if (row < 1 || row > 8 || col < 1 || col > 8) {
                     break;
                 }
 

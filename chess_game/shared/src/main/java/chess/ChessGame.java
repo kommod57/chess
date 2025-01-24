@@ -84,6 +84,15 @@ public class ChessGame {
         board.addPiece(endPosition, moving_piece);
         // delete old piece
         board.addPiece(startPosition, null);
+
+        // Pawn promotion
+        if (move.getPromotionPiece() != null && moving_piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            moving_piece = new ChessPiece(currentColor, move.getPromotionPiece());
+            board.addPiece(endPosition, moving_piece);
+        }
+
+        // switch to other team
+        currentColor = (currentColor == TeamColor.BLACK) ? TeamColor.WHITE : TeamColor.BLACK;
     }
 
     /**
@@ -93,7 +102,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException("Not implemented yet");
     }
 
     /**
@@ -123,7 +132,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -132,6 +141,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 }

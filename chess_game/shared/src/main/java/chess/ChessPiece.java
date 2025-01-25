@@ -200,6 +200,71 @@ public class ChessPiece {
                 }
             }
         }
+        // THE QUEEN
+        if (this.type == PieceType.QUEEN) {
+            int[][] directions = {
+                    {-1,0},{1,0},{0,1},{0,-1},
+                    { -1, 1 },{1,-1},{1,1},{-1,-1}
+            };
+
+            for (int[] direction : directions) {
+                int row = myPosition.getRow();
+                int col = myPosition.getColumn();
+
+                while (true) {
+                    row += direction[0];
+                    col += direction[1];
+                    if (row < 1 || row > 8 || col < 1 || col > 8) {
+                        break;
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(row, col);
+                    ChessPiece pieceAtTarget = board.getPiece(newPosition);
+
+                    if (pieceAtTarget == null) {
+                        moves.add(new ChessMove(myPosition, newPosition, null));
+
+                    } else {
+                        if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        // THE ROOK
+        if (this.type == PieceType.ROOK) {
+            int[][] directions = {
+                    {-1,0},{1,0},{0,1},{0,-1}
+            };
+
+            for (int[] direction : directions) {
+                int row = myPosition.getRow();
+                int col = myPosition.getColumn();
+
+                while (true) {
+                    row += direction[0];
+                    col += direction[1];
+                    if (row < 1 || row > 8 || col < 1 || col > 8) {
+                        break;
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(row, col);
+                    ChessPiece pieceAtTarget = board.getPiece(newPosition);
+
+                    if (pieceAtTarget == null) {
+                        moves.add(new ChessMove(myPosition, newPosition, null));
+
+                    } else {
+                        if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
         return moves;
     }
 

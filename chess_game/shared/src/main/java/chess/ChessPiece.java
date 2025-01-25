@@ -149,6 +149,54 @@ public class ChessPiece {
                 }
             }
         }
+        // Pawn moves
+        if (this.type == PieceType.PAWN) {
+            int rowDir = pieceColor == ChessGame.TeamColor.WHITE ? 1 : -1;
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+            int[][] directions = {
+                    {1, 0},
+                    {2,0}, //only at first move
+                    {1,1},{1,-1} // captures
+            };
+
+            for (int[] direction : directions) {
+                //ChessPosition newPosition = new ChessPosition(row, col);
+                //ChessPiece pieceAtTarget = board.getPiece(newPosition);
+
+                int newRow = row;
+                int newCol = col;
+
+                newRow += direction[0] * rowDir;
+                newCol += direction[1];
+                if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
+                    ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                    ChessPiece pieceAtTarget = board.getPiece(newPosition);
+                    if (direction[1] == 0) {
+                        if (pieceAtTarget == null) {
+                            moves.add(new ChessMove(myPosition, newPosition, null));
+                        }
+                    } else {
+                        if (pieceAtTarget == null) {
+                            if (direction[0] == 0) {
+                                moves.add(new ChessMove(myPosition, newPosition, null));
+                            }
+
+                        } else {
+                            if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
+                                moves.add(new ChessMove(myPosition, newPosition, null));
+                            }
+                        }
+                    }
+                }
+                System.out.println(direction[0] + "," + direction[1] + row);
+                if (direction[1] != 2 && direction[1] != -2 && row != 2 && row != 7) {
+                    break;
+                }
+                    }
+                }
+
+
         return moves;
     }
 

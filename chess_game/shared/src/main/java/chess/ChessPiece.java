@@ -56,7 +56,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        System.out.println(this.type);
         Collection<ChessMove> moves = new ArrayList<>();
         // implement bishop moves (diagonal)
         if (this.type == PieceType.BISHOP) {

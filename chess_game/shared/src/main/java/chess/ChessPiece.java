@@ -270,16 +270,32 @@ public class ChessPiece {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = type.hashCode();
+        result = 31 * result + pieceColor.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        String symbol = switch (type) {
+            case QUEEN -> "Q";
+            case ROOK -> "R";
+            case KNIGHT -> "N";
+            case BISHOP -> "B";
+            case KING -> "K";
+            case PAWN -> "P";
+            default -> "";
+        };
+        return (pieceColor == ChessGame.TeamColor.WHITE ? symbol.toUpperCase() : symbol.toLowerCase());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null) return false;
+
+        ChessPiece other = (ChessPiece) obj;
+
+        return this.type == other.type && this.pieceColor.equals(other.pieceColor);
     }
 }

@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -13,7 +14,8 @@ public class ChessGame {
     private TeamColor currentColor;
 
     public ChessGame() {
-        this.board = new ChessBoard();
+        this.board = new ChessBoard(); ;
+        this.board.resetBoard();
         this.currentColor = TeamColor.WHITE;
     }
 
@@ -105,7 +107,47 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         // Returns true if the specified team’s King could be captured by an opposing piece.
-        return isInCheckmate(teamColor);
+        ChessPiece king = null;
+        ChessPosition kingPosition = null;
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    king = piece;
+                    kingPosition = position;
+                    break;
+                }
+            }
+        }
+
+        if (king == null) {
+            return false; // this should never happen
+        }
+
+        // See if any piece can attack the king
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor) {
+
+
+                    List<ChessMove> moves = (List<ChessMove>) piece.pieceMoves(board, position);
+                    System.out.println(moves + "piece" + piece);
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

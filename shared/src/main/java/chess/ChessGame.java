@@ -1,5 +1,6 @@
 package chess;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -149,17 +150,15 @@ public class ChessGame {
         if (king == null) {
             return false; // this should never happen
         }
+
         // See if any piece can attack the king
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
-
                 if (piece != null && piece.getTeamColor() != teamColor) {
                     List<ChessMove> moves = (List<ChessMove>) piece.pieceMoves(board, position);
-
                     for (ChessMove move : moves) {
-
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
@@ -167,6 +166,7 @@ public class ChessGame {
                 }
             }
         }
+
         return false;
     }
 
@@ -196,6 +196,72 @@ public class ChessGame {
 
         if (king == null) {
             return false; // this should never happen
+        }
+
+
+        // see if any other pieces can save the day before king gets shrecked
+        List<ChessMove> helperMoves = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null) {
+                    if (piece.getTeamColor()==teamColor) {
+                        if (piece.getPieceType() != ChessPiece.PieceType.KING) {
+                            helperMoves = (List<ChessMove>) piece.pieceMoves(board, position);
+                        }
+                    }
+                }
+                }
+                }
+        for (ChessMove move : helperMoves) {
+
+            ChessPiece PieceAtTarget =  board.getPiece(move.getEndPosition());
+            if (PieceAtTarget != null) {
+                board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+            }
+
+        }
+
+
+
+        // see if king can capture
+        List<ChessMove> king_moves = (List<ChessMove>) king.pieceMoves(board, kingPosition);
+        for (ChessMove k_move : king_moves) {
+            ChessPosition end_move = k_move.getEndPosition();
+            ChessPiece PieceAtTarget =  board.getPiece(end_move);
+            if (PieceAtTarget != null) {
+                if (PieceAtTarget.getTeamColor() != teamColor) {
+                    // check to see if enemy can still capture
+
+                    for (int row = 1; row <= 8; row++) {
+                        for (int col = 1; col <= 8; col++) {
+                            ChessPosition position = new ChessPosition(row, col);
+                            ChessPiece piece = board.getPiece(position);
+                            List<ChessMove> moves = new ArrayList<>();
+                            if (piece != null) {
+                                if (piece.getTeamColor()!=teamColor) {
+                                    ChessBoard upBoard = board;
+                                    upBoard.addPiece(end_move, king);
+                                    moves = (List<ChessMove>) piece.pieceMoves(upBoard, position);
+
+
+
+                                    System.out.println(moves);
+                                }
+                                for (ChessMove move : moves) {
+                                    if (move.getEndPosition().equals(end_move)) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+            }
         }
         // See if any piece can attack the king
         for (int row = 1; row <= 8; row++) {
@@ -271,6 +337,38 @@ public class ChessGame {
                     }
                 }
             }
+            // check to see if king is pinned
+            int validMoves = king_moves.size();
+            int kingHitHere = 0;
+            boolean nextMove = true;
+            for (ChessMove k_move : king_moves) {
+                nextMove = true;
+                for (int row = 1; row <= 8; row++) {
+                    for (int col = 1; col <= 8; col++) {
+                        ChessPosition position = new ChessPosition(row, col);
+
+                        ChessPiece piece = board.getPiece(position);
+                        List<ChessMove> moves = new ArrayList<>();
+                        if (piece != null) {
+                            if (piece.getTeamColor()!=teamColor){
+                                moves = (List<ChessMove>) piece.pieceMoves(board, position);
+                            }
+                            for (ChessMove move : moves) {
+                                if (move.getEndPosition().equals(k_move.getEndPosition())) {
+                                    if (nextMove){
+                                        kingHitHere += 1;
+                                        nextMove = false;
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println(kingHitHere + " " + validMoves);
+            return kingHitHere >= validMoves && kingHitHere != 0;
 
 //            assert kingPosition != null;
 //            ChessPiece king_piece = board.getPiece(kingPosition);

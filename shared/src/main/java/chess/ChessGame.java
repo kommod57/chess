@@ -98,6 +98,9 @@ public class ChessGame {
         ChessPosition endPosition = move.getEndPosition();
 
         ChessPiece moving_piece = board.getPiece(startPosition);
+        if (isInCheck(getTeamTurn())) {
+            throw new InvalidMoveException("Checked");
+        }
         if (moving_piece == null || moving_piece.getTeamColor() != currentColor) {
             throw new InvalidMoveException("Invalid move");
         }

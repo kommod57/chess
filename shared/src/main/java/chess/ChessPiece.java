@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /* not sure where to put this
 import java.util.Collection;
@@ -20,6 +21,26 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
     }
 
     /**
@@ -267,34 +288,5 @@ public class ChessPiece {
         return moves;
     }
 
-    @Override
-    public int hashCode() {
-        int result = type.hashCode();
-        result = 31 * result + pieceColor.hashCode();
-        return result;
-    }
 
-    @Override
-    public String toString() {
-        String symbol = switch (type) {
-            case QUEEN -> "Q";
-            case ROOK -> "R";
-            case KNIGHT -> "N";
-            case BISHOP -> "B";
-            case KING -> "K";
-            case PAWN -> "P";
-            default -> "";
-        };
-        return (pieceColor == ChessGame.TeamColor.WHITE ? symbol.toUpperCase() : symbol.toLowerCase());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-
-        ChessPiece other = (ChessPiece) obj;
-
-        return this.type == other.type && this.pieceColor.equals(other.pieceColor);
-    }
 }

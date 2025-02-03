@@ -15,6 +15,14 @@ public class ChessPosition {
     private final int row;
     private final int col;
 
+    @Override
+    public String toString() {
+        return "ChessPosition{" +
+                "row=" + row +
+                ", col=" + col +
+                '}';
+    }
+
     public ChessPosition(int row, int col) {
         if (row < 1 || col < 1 || row > 8 || col > 8) {
             throw new IllegalArgumentException("Invalid row or column " + row + "," + col);
@@ -40,20 +48,15 @@ public class ChessPosition {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPosition that = (ChessPosition) o;
+        return row == that.row && col == that.col;
+    }
+
+    @Override
     public int hashCode() {
-        return 31 * row + col;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof ChessPosition)) return false;
-        ChessPosition other = (ChessPosition) obj;
-        return this.row == other.row && this.col == other.col;
-    }
-
-    @Override
-    public String toString() {
-        return "Pos [row=" + row + ", col=" + col + "]";
+        return Objects.hash(row, col);
     }
 }
+

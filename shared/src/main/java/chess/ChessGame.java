@@ -1,7 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -12,6 +14,16 @@ import java.util.List;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor currentColor;
+//    private ChessPosition startingPosition;
+//    private ChessPosition endingPosition;
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "board=" + board +
+                ", currentColor=" + currentColor +
+                '}';
+    }
 
     public ChessGame() {
         this.board = new ChessBoard(); ;
@@ -35,6 +47,17 @@ public class ChessGame {
         this.currentColor = team;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(board, chessGame.board) && currentColor == chessGame.currentColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, currentColor);
+    }
 
 
     /**
@@ -109,7 +132,6 @@ public class ChessGame {
         // Returns true if the specified team’s King could be captured by an opposing piece.
         ChessPiece king = null;
         ChessPosition kingPosition = null;
-
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
@@ -127,19 +149,17 @@ public class ChessGame {
         if (king == null) {
             return false; // this should never happen
         }
-
         // See if any piece can attack the king
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
 
-                if (piece != null && piece.getTeamColor() == teamColor) {
-
-
+                if (piece != null && piece.getTeamColor() != teamColor) {
                     List<ChessMove> moves = (List<ChessMove>) piece.pieceMoves(board, position);
-                    System.out.println(moves + "piece" + piece);
+
                     for (ChessMove move : moves) {
+
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
@@ -158,7 +178,45 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
        // Returns true if the given team has no way to protect their king from being captured.
-        return teamColor == TeamColor.WHITE;
+        ChessPiece king = null;
+        ChessPosition kingPosition = null;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    king = piece;
+                    kingPosition = position;
+                    break;
+                }
+            }
+        }
+
+        if (king == null) {
+            return false; // this should never happen
+        }
+        // See if any piece can attack the king
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null) {
+                    List<ChessMove> moves = (List<ChessMove>) piece.pieceMoves(board, position);
+
+                    for (ChessMove move : moves) {
+
+                        if (move.getEndPosition().equals(kingPosition)) {
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -169,7 +227,58 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //Returns true if the given team has no legal moves but their king is not in immediate danger.
+        if (!isInCheckmate(teamColor))
+        {
+            // check if it can make a legal move
+            ChessPosition kingPosition = null;
+
+            for (int row = 1; row <= 8; row++) {
+                for (int col = 1; col <= 8; col++) {
+                    ChessPosition position = new ChessPosition(row, col);
+                    ChessPiece piece = board.getPiece(position);
+
+                    if (piece != null && piece.getTeamColor() == teamColor &&
+                            piece.getPieceType() == ChessPiece.PieceType.KING) {
+                        kingPosition = position;
+                        break;
+                    }
+                }
+            }
+
+            List<ChessMove> enemy_moves = new ArrayList<>();
+
+            for (int row = 1; row <= 8; row++) {
+                for (int col = 1; col <= 8; col++) {
+                    ChessPosition position = new ChessPosition(row, col);
+                    ChessPiece piece = board.getPiece(position);
+
+                    if (piece != null) {
+                        if (piece.getTeamColor() != teamColor) {
+                            enemy_moves = (List<ChessMove>) piece.pieceMoves(board, position);
+                        }
+
+                    }
+                }
+            }
+            assert kingPosition != null;
+            ChessPiece king_piece = board.getPiece(kingPosition);
+            List<ChessMove> king_moves = (List<ChessMove>) king_piece.pieceMoves(board, kingPosition);
+            for (ChessMove k_move : king_moves) {
+                for (ChessMove e_move : enemy_moves) {
+                    if (k_move.equals(e_move)) {
+                        return true;
+                    }
+                }
+            }
+
+//            assert kingPosition != null;
+//            ChessPiece king_piece = board.getPiece(kingPosition);
+//
+//            List<ChessMove> king_moves = (List<ChessMove>) king_piece.pieceMoves(board, kingPosition);
+//            return king_moves.isEmpty();
+        }
+            return false;
     }
 
     /**

@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -69,55 +72,23 @@ public class ChessBoard {
         }
     }
 
-    @Override
-    public int hashCode() {
-        int result = 1;
-        for (int row = 1; row < 9; row++) {
-            for (int column = 1; column < 9; column++) {
-                ChessPiece piece = squares[row][column];
-                result = 31 * result + (piece == null ? 0 : piece.hashCode());
 
-            }
-        }
-        return result;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(squares, that.squares);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        ChessBoard other = (ChessBoard) obj;
-
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece thisPiece = this.getPiece(position);
-                ChessPiece otherPiece = other.getPiece(position);
-
-                if (thisPiece == null) {
-                    if (otherPiece != null) return false;
-                } else if (!thisPiece.equals(otherPiece)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public int hashCode() {
+        return Arrays.deepHashCode(squares);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        for (int row = 8; row >= 1; row--) { // Start from top (rank 8)
-            for (int col = 1; col <= 8; col++) {
-                ChessPiece piece = getPiece(new ChessPosition(row, col));
-                sb.append(piece == null ? "." : piece.toString()).append(" ");
-            }
-            sb.append("\n"); // Newline after each row
-        }
-
-        return sb.toString();
+        return "ChessBoard{" +
+                "squares=" + Arrays.toString(squares) +
+                '}';
     }
-
 }

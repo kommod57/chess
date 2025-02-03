@@ -22,7 +22,7 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         // validatePosition(position);
-        squares[position.getRow() - 1][position.getColumn() - 1] = piece;
+        squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -34,7 +34,7 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         // force index back
-        return squares[position.getRow() - 1][position.getColumn() - 1];
+        return squares[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -74,7 +74,7 @@ public class ChessBoard {
         int result = 1;
         for (int row = 1; row < 9; row++) {
             for (int column = 1; column < 9; column++) {
-                ChessPiece piece = squares[row-1][column-1];
+                ChessPiece piece = squares[row][column];
                 result = 31 * result + (piece == null ? 0 : piece.hashCode());
 
             }

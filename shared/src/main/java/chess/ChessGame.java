@@ -65,35 +65,35 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessPosition startPosition = move.getStartPosition();
-        ChessPosition endPosition = move.getEndPosition();
-
-        ChessPiece moving_piece = board.getPiece(startPosition);
-        if (moving_piece == null || moving_piece.getTeamColor() != currentColor) {
-            throw new InvalidMoveException("Invalid move");
-        }
-
-        Collection<ChessMove> validMoves = validMoves(startPosition);
-        if (!validMoves.contains(move)) {
-            throw new InvalidMoveException("Invalid move");
-        }
-
-        // movement logic
-        // move to new position
-        board.addPiece(endPosition, moving_piece);
-        // delete old piece
-        board.addPiece(startPosition, null);
-
-        // Pawn promotion
-        if (move.getPromotionPiece() != null && moving_piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            moving_piece = new ChessPiece(currentColor, move.getPromotionPiece());
-            board.addPiece(endPosition, moving_piece);
-        }
-
-        // switch to other team
-        currentColor = (currentColor == TeamColor.BLACK) ? TeamColor.WHITE : TeamColor.BLACK;
-    }
+//    public void makeMove(ChessMove move) throws InvalidMoveException {
+//        ChessPosition startPosition = move.getStartPosition();
+//        ChessPosition endPosition = move.getEndPosition();
+//
+//        ChessPiece moving_piece = board.getPiece(startPosition);
+//        if (moving_piece == null || moving_piece.getTeamColor() != currentColor) {
+//            throw new InvalidMoveException("Invalid move");
+//        }
+//
+//        Collection<ChessMove> validMoves = validMoves(startPosition);
+//        if (!validMoves.contains(move)) {
+//            throw new InvalidMoveException("Invalid move");
+//        }
+//
+//        // movement logic
+//        // move to new position
+//        board.addPiece(endPosition, moving_piece);
+//        // delete old piece
+//        board.addPiece(startPosition, null);
+//
+//        // Pawn promotion
+//        if (move.getPromotionPiece() != null && moving_piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+//            moving_piece = new ChessPiece(currentColor, move.getPromotionPiece());
+//            board.addPiece(endPosition, moving_piece);
+//        }
+//
+//        // switch to other team
+//        currentColor = (currentColor == TeamColor.BLACK) ? TeamColor.WHITE : TeamColor.BLACK;
+//    }
 
     /**
      * Determines if the given team is in check

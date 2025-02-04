@@ -87,15 +87,20 @@ public class ChessGame {
 
         for (ChessMove move : pieceMoves) {
             ChessPosition endPosition = move.getEndPosition();
-            ChessBoard begBoard = new ChessBoard();
-            // move to new position
+
+            // save captured pieces
+            ChessPiece capturedPiece = board.getPiece(endPosition);
+
             board.addPiece(endPosition, piece);
-            // delete old piece
             board.addPiece(startPosition, null);
 
             if (!isInCheck(piece.getTeamColor())) {
                 validPieceMoves.add(move);
             }
+
+            // reset the board
+            board.addPiece(startPosition, piece);
+            board.addPiece(endPosition, capturedPiece);
         }
 
         return validPieceMoves;

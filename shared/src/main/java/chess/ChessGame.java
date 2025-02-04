@@ -82,10 +82,23 @@ public class ChessGame {
         if (piece == null) {
             return null;
         }
-        if (piece.getTeamColor() != currentColor) {
-            return null;
+        List<ChessMove> pieceMoves = (List<ChessMove>) piece.pieceMoves(board, startPosition);
+        List<ChessMove> validPieceMoves = new ArrayList<>();
+
+        for (ChessMove move : pieceMoves) {
+            ChessPosition endPosition = move.getEndPosition();
+            ChessBoard begBoard = new ChessBoard();
+            // move to new position
+            board.addPiece(endPosition, piece);
+            // delete old piece
+            board.addPiece(startPosition, null);
+
+            if (!isInCheck(piece.getTeamColor())) {
+                validPieceMoves.add(move);
+            }
         }
-        return piece.pieceMoves(board, startPosition);
+
+        return validPieceMoves;
     }
 
     /**
@@ -97,22 +110,14 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
-        if (startPosition==null) {
-            throw new InvalidMoveException("Start pos is null");
-        }
-        if (endPosition==null) {
-            throw new InvalidMoveException("End pos is null");
-        }
 
         ChessPiece moving_piece = board.getPiece(startPosition);
-        if (moving_piece==null)  {
-            throw new InvalidMoveException("moving piece is null");
-        }
+
 
         if (isInCheck(getTeamTurn())) {
             throw new InvalidMoveException("Checked");
         }
-        if (moving_piece.getTeamColor() != currentColor) {
+        if (moving_piece == null || moving_piece.getTeamColor() != currentColor) {
             throw new InvalidMoveException("Invalid move");
         }
 
@@ -121,13 +126,6 @@ public class ChessGame {
             throw new InvalidMoveException("Valid moves is null");
         }
         if (!validMoves.contains(move)) {
-            throw new InvalidMoveException("Invalid move");
-        }
-        Collection<ChessMove> validEndMoves = validMoves(endPosition);
-        if (validEndMoves == null) {
-            throw new InvalidMoveException("Valid moves is null");
-        }
-        if (!validEndMoves.contains(move)) {
             throw new InvalidMoveException("Invalid move");
         }
 

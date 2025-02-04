@@ -15,6 +15,7 @@ import java.util.Objects;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor currentColor;
+    private ChessPiece currentPiece;
 //    private ChessPosition startingPosition;
 //    private ChessPosition endingPosition;
 
@@ -96,17 +97,37 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
+        if (startPosition==null) {
+            throw new InvalidMoveException("Start pos is null");
+        }
+        if (endPosition==null) {
+            throw new InvalidMoveException("End pos is null");
+        }
 
         ChessPiece moving_piece = board.getPiece(startPosition);
+        if (moving_piece==null)  {
+            throw new InvalidMoveException("moving piece is null");
+        }
+
         if (isInCheck(getTeamTurn())) {
             throw new InvalidMoveException("Checked");
         }
-        if (moving_piece == null || moving_piece.getTeamColor() != currentColor) {
+        if (moving_piece.getTeamColor() != currentColor) {
             throw new InvalidMoveException("Invalid move");
         }
 
         Collection<ChessMove> validMoves = validMoves(startPosition);
+        if (validMoves == null) {
+            throw new InvalidMoveException("Valid moves is null");
+        }
         if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move");
+        }
+        Collection<ChessMove> validEndMoves = validMoves(endPosition);
+        if (validEndMoves == null) {
+            throw new InvalidMoveException("Valid moves is null");
+        }
+        if (!validEndMoves.contains(move)) {
             throw new InvalidMoveException("Invalid move");
         }
 
@@ -226,9 +247,6 @@ public class ChessGame {
             }
 
         }
-
-
-
         // see if king can capture
         List<ChessMove> king_moves = (List<ChessMove>) king.pieceMoves(board, kingPosition);
         for (ChessMove k_move : king_moves) {
@@ -381,7 +399,35 @@ public class ChessGame {
         }
             return false;
     }
-
+//    public boolean castle(TeamColor teamColor, ChessPiece kingPiece, ChessPosition kingPosition,
+//                          ChessPiece rookPiece, ChessPosition rookPosition) {
+//
+//        boolean hasntMovedKing = false;
+//        if (kingPosition != null) {
+//            if ((kingPiece.getTeamColor()==TeamColor.WHITE && kingPosition.getRow() == 1)||
+//                    (kingPiece.getTeamColor()==TeamColor.BLACK && kingPosition.getRow() == 8)) {
+//                if (kingPosition.getColumn() == 5) {
+//                    hasntMovedKing = true;
+//                }
+//            }
+//        }
+//        boolean hasntMovedRook = false;
+//        if (rookPosition != null) {
+//            if ((rookPiece.getTeamColor()==TeamColor.WHITE && rookPosition.getRow() == 1)||
+//                    (rookPiece.getTeamColor()==TeamColor.BLACK && rookPosition.getRow() == 8)) {
+//                        hasntMovedRook = true;
+//            }
+//        }
+//        boolean squaresEmpty = false;
+//        if (rookPosition.getColumn() == 8) {
+//            if (rookPiece.getTeamColor()==TeamColor.WHITE) {
+//                ChessPosition pos =
+//                if (board.getPiece([1][7])!=null)
+//            }
+//        }
+//
+//        return false;
+//    }
     /**
      * Sets this game's chessboard with a given board
      *

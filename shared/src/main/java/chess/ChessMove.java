@@ -36,6 +36,7 @@ public class ChessMove {
      */
 
     public ChessPosition getStartPosition() {
+
         return this.startPosition;
     }
 

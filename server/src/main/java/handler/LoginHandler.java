@@ -1,31 +1,45 @@
 package handler;
 
-import org.eclipse.jetty.util.log.Log;
+import dao.UserDAO;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import service.LoginService;
+import com.google.gson.Gson;
+import server.models.LoginResponse;
+import server.models.LoginRequest;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class LoginHandler implements Route {
-    private final LoginService loginService;
+    private final Gson gson = new Gson();
 
-    public LoginHandler() {
-        this.loginService = new LoginService();
-    }
+
     @Override
     public Object handle(Request request, Response response) {
         // login
-        String username = request.queryParams("username");
-        String password = request.queryParams("password");
+        System.out.println("LoginHandler triggered");
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:chess_server.db")) {
 
-        boolean loginSuccessful = Boolean.parseBoolean(loginService.login(username, password));
+            UserDAO userDAO = new UserDAO(connection);
 
-        if (loginSuccessful) {
-            response.status(200);
-            return "Success";
-        } else {
-            response.status(401);
+            String requestBody = request.body();
+            System.out.println("Received the body: " + requestBody);
+
+            LoginService loginService = new LoginService(userDAO);
+
+            LoginRequest loginRequest = gson.fromJson(request.body(), LoginRequest.class);
+
+            LoginResponse loginResponse = loginService.login(loginRequest);
+
+            response.status(loginResponse.isSuccess() ? 200 : 401);
+
+            return gson.toJson(loginResponse);
+
+        } catch (Exception e) {
+            response.status(400);
+            return gson.toJson(new LoginResponse(false, "Request is not valid " + e.getMessage()));
         }
-        return "Invalid username/password";
+
     }
 }

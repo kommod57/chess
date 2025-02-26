@@ -1,5 +1,8 @@
 package server;
 
+import com.google.gson.Gson;
+import handler.LoginHandler;
+import org.eclipse.jetty.util.log.Log;
 import service.LoginService;
 import spark.Spark;
 
@@ -8,29 +11,24 @@ public class Server {
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
+        System.out.println("Server on port " + desiredPort);
+
         Spark.staticFiles.location("/web");
 
         // Register your endpoints and handle exceptions here.
+//        Spark.get("/", (request, response) -> {
+//            response.type("text/html");
+//            return "<html><body><h1>Chess Server</h1><body></html>";
+//        });
+        Gson gson = new Gson();
+        System.out.println("Doing a login?");
+
         Spark.get("/", (request, response) -> {
-            response.type("text/html");
-            return "<html><body><h1>Chess Server</h1><body></html>";
-        });
+            System.out.println(("Root route accessed"));
+            return  "Server is running";
+                });
 
-        Spark.post("/login", (request, response) -> {
-            String username = request.queryParams("username");
-            String password = request.queryParams("password");
-
-            // Call login service for validation
-            LoginService loginService = new LoginService();
-            boolean loginSuccessful = Boolean.parseBoolean(loginService.login(username, password));
-
-            if (loginSuccessful) {
-                response.status(200); // is ok
-                return "Log in successful";
-            } else {
-                return "Username or password is incorrect";
-            }
-        });
+        Spark.post("/login", new LoginHandler(), gson::toJson);
 
         Spark.exception(Exception.class, (exception, request, response) -> {
             response.status(500);
@@ -39,7 +37,9 @@ public class Server {
 //        //This line initializes the server and can be removed once you have a functioning endpoint
 //        Spark.init();
 
+        Spark.init();
         Spark.awaitInitialization();
+
         return Spark.port();
     }
 

@@ -1,14 +1,32 @@
 package dao;
+import model.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 
 public class UserDAO {
-    private static final String valid_username = "user";
-    private static final String valid_password = "passward5";
+    private Connection connection;
 
-    public boolean saveUser(String username, String password) {
-        return true;
+    public UserDAO(Connection connection) {
+        this.connection = connection;
     }
 
-    public boolean validateUser(String username, String password) {
-        return valid_username.equals(username) && valid_password.equals(password);
+    public User findUserByUsername(String username) {
+        try {
+            String query = "SELECT * FROM users WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String password = resultSet.getString("password");
+                return new User(username, password);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

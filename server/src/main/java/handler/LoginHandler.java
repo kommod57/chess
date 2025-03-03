@@ -19,7 +19,8 @@ public class LoginHandler implements Route {
     public Object handle(Request request, Response response) {
         // login
         System.out.println("LoginHandler triggered");
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:chess_server.db")) {
+        try (Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/chess_db", "username", "password")) {
 
             UserDAO userDAO = new UserDAO(connection);
 
@@ -29,6 +30,7 @@ public class LoginHandler implements Route {
             LoginService loginService = new LoginService(userDAO);
 
             LoginRequest loginRequest = gson.fromJson(request.body(), LoginRequest.class);
+            System.out.println("Login request: " + loginRequest);
 
             LoginResponse loginResponse = loginService.login(loginRequest);
 
@@ -37,7 +39,9 @@ public class LoginHandler implements Route {
             return gson.toJson(loginResponse);
 
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             response.status(400);
+            response.type("application/json");
             return gson.toJson(new LoginResponse(false, "Request is not valid " + e.getMessage()));
         }
 

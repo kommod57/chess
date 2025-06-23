@@ -10,7 +10,7 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final ChessPiece[][] squares = new ChessPiece[8][8];
+    private final ChessPiece[][] squares = new ChessPiece[9][9];
 
     public ChessBoard() {
     }
@@ -42,17 +42,17 @@ public class ChessBoard {
      */
     public void resetBoard() {
         // Initial setup
-        for (int row = 0; row <= 7; row++) {
-        for (int col = 0; col <= 7; col ++) {
+        for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
             squares[row][col] = null;
         }
     }
 
         // Pawns
-        for (int col = 0; col <= 7; col++) {
-            addPiece(new ChessPosition(1, col),
+        for (int col = 1; col <= 8; col++) {
+            addPiece(new ChessPosition(2, col),
                     new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
-            addPiece(new ChessPosition(6, col),
+            addPiece(new ChessPosition(7, col),
                     new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
 
@@ -63,9 +63,9 @@ public class ChessBoard {
                 ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP,
                 ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK
         };
-        for (int col = 0; col <= 7; col++) {
-            addPiece(new ChessPosition(0, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col]));
-            addPiece(new ChessPosition(7, col), new ChessPiece(ChessGame.TeamColor.BLACK, back_rows[col]));
+        for (int col = 1; col <= 8; col++) {
+            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col-1]));
+            addPiece(new ChessPosition(8, col), new ChessPiece(ChessGame.TeamColor.BLACK, back_rows[col-1]));
         }
     }
 

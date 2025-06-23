@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -56,7 +57,7 @@ public class ChessPiece {
      */
     public ChessGame.TeamColor getTeamColor() {
         return this.pieceColor;
-    };
+    }
 
     /**
      * @return which type of chess piece this piece is
@@ -73,6 +74,38 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new ArrayList<>();
+        int[][] dirs = new int[0][0];
+        if (this.type.equals(PieceType.BISHOP)) {
+            dirs = new int[][] {{-1, 1}, {1, 1}, {1, -1}, {-1, -1}
+            };
+            }
+        for (int[] direction : dirs) {
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+
+            while (true) {
+                row += direction[0];
+                col += direction[1];
+                if (row < 1 || row > 8 || col < 1 || col > 8) {
+                    break;
+                }
+
+                ChessPosition newPosition = new ChessPosition(row, col);
+                ChessPiece pieceAtTarget = board.getPiece(newPosition);
+
+                if (pieceAtTarget == null) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+
+                } else {
+                    if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
+                        moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
+                    break;
+                }
+            }
+
+        }
+        return moves;
     }
 }

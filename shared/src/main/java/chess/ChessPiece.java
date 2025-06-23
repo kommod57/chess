@@ -113,6 +113,12 @@ public class ChessPiece {
             dirs = new int[][] {
                     {1,0},{2,0},{1,1},{1,-1}
             };
+            if (getTeamColor().equals(ChessGame.TeamColor.BLACK)) {
+                dirs = new int[][] {
+                        {-1,0},{-2,0},{-1,1},{-1,-1}
+            };
+
+            };
         }
         for (int[] direction : dirs) {
             int old_row = myPosition.getRow();
@@ -128,9 +134,19 @@ public class ChessPiece {
                     ChessPosition newPosition = new ChessPosition(row, col);
                     ChessPiece pieceAtTarget = board.getPiece(newPosition);
 
+
                     if (pieceAtTarget == null) {
                         if (special_p) {
-                            if (direction[1]!=0||(direction[0]==2&&old_row!=7&&old_row!=2)) {
+                            if (((old_row==7||old_row==2)&&(board.getPiece(new ChessPosition(3, col)) != null||board.getPiece(new ChessPosition
+                                    (6, col)) != null))||direction[1]!=0||((direction[0]==2||
+                                    direction[0]==-2)&&old_row!=7&&old_row!=2)) {
+                                break;
+                            }
+                            if (row==8||row==1) {
+                                moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+                                moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                                moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                                moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
                                 break;
                             }
                         };
@@ -140,6 +156,13 @@ public class ChessPiece {
                         if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
                             if (special_p) {
                                 if (direction[1]==0) {
+                                    break;
+                                }
+                                if (row==8||row==1) {
+                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
                                     break;
                                 }
                             };

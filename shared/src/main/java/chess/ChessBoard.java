@@ -57,15 +57,15 @@ public class ChessBoard {
         }
 
         // Special pieces
-        ChessPiece.PieceType[] back_rows = {
+        ChessPiece.PieceType[] backRows = {
                 ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT,
                 ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN,
                 ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP,
                 ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK
         };
         for (int col = 1; col <= 8; col++) {
-            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, back_rows[col-1]));
-            addPiece(new ChessPosition(8, col), new ChessPiece(ChessGame.TeamColor.BLACK, back_rows[col-1]));
+            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, backRows[col-1]));
+            addPiece(new ChessPosition(8, col), new ChessPiece(ChessGame.TeamColor.BLACK, backRows[col-1]));
         }
     }
 

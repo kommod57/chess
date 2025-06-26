@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -66,6 +67,17 @@ public class ChessPiece {
         return this.type;
     }
 
+    //For Promotion
+    public static void addPromotionMoves(ArrayList<ChessMove> moves, ChessPosition from, ChessPosition to) {
+        for (PieceType type : Arrays.asList(
+                PieceType.QUEEN,
+                PieceType.BISHOP,
+                PieceType.KNIGHT,
+                PieceType.ROOK)) {
+            moves.add(new ChessMove(from, to, type));
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -73,11 +85,12 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<>();
+        ArrayList<ChessMove> moves = new ArrayList<>();
         int[][] dirs = new int[0][0];
         boolean inf = false;
-        boolean special_p = false;
+        boolean specialP = false;
         if (this.type.equals(PieceType.BISHOP)) {
             dirs = new int[][] {{-1, 1}, {1, 1}, {1, -1}, {-1, -1}
             };
@@ -109,7 +122,7 @@ public class ChessPiece {
             inf = true;
         }
         else if (this.type.equals(PieceType.PAWN)) {
-            special_p = true;
+            specialP = true;
             dirs = new int[][] {
                     {1,0},{2,0},{1,1},{1,-1}
             };
@@ -118,10 +131,10 @@ public class ChessPiece {
                         {-1,0},{-2,0},{-1,1},{-1,-1}
             };
 
-            };
+            }
         }
         for (int[] direction : dirs) {
-            int old_row = myPosition.getRow();
+            int oldRow = myPosition.getRow();
             int row = myPosition.getRow();
             int col = myPosition.getColumn();
                 while (true) {
@@ -136,36 +149,31 @@ public class ChessPiece {
 
 
                     if (pieceAtTarget == null) {
-                        if (special_p) {
-                            if (((old_row==7||old_row==2)&&(board.getPiece(new ChessPosition(3, col)) != null||board.getPiece(new ChessPosition
+                        if (specialP) {
+                            if (((oldRow==7||oldRow==2)&&(board.getPiece(new ChessPosition(3, col)) != null||board.getPiece(new ChessPosition
                                     (6, col)) != null))||direction[1]!=0||((direction[0]==2||
-                                    direction[0]==-2)&&old_row!=7&&old_row!=2)) {
+                                    direction[0]==-2)&&oldRow!=7&&oldRow!=2)) {
                                 break;
                             }
                             if (row==8||row==1) {
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                                moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+                                ChessPiece.addPromotionMoves(moves,myPosition, newPosition);
                                 break;
                             }
-                        };
+                        }
                         moves.add(new ChessMove(myPosition, newPosition, null));
 
-                    } else {
+                    }
+                    else {
                         if (!pieceAtTarget.getTeamColor().equals(pieceColor)) {
-                            if (special_p) {
+                            if (specialP) {
                                 if (direction[1]==0) {
                                     break;
                                 }
                                 if (row==8||row==1) {
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                                    moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+                                    ChessPiece.addPromotionMoves(moves,myPosition, newPosition);
                                     break;
                                 }
-                            };
+                            }
                             moves.add(new ChessMove(myPosition, newPosition, null));
                         }
                         break;

@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,8 +16,8 @@ public class ChessGame {
     private ChessBoard board;
     private ChessPiece currentPiece;
     public ChessGame() {
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
+        this.board = new ChessBoard();
+        this.board.resetBoard();
         this.color = TeamColor.WHITE;
     }
 
@@ -24,8 +25,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-//        return color;
-        throw new RuntimeException("Not implemented");
+        return color;
     }
 
     /**
@@ -87,7 +87,47 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+
+        ChessPiece movingPiece = board.getPiece(startPosition);
+
+        if (isInCheck(getTeamTurn())) {
+            throw new InvalidMoveException("Checked");
+        }
+//        if (isInCheckmate(getTeamTurn())) {
+//            throw new InvalidMoveException("Checkmate");
+//        }
+//        if (isInStalemate(getTeamTurn())) {
+//            throw new InvalidMoveException("Stalemate");
+//        }
+
+        if (movingPiece == null || movingPiece.getTeamColor() != color) {
+            throw new InvalidMoveException("Invalid move");
+        }
+
+        Collection<ChessMove> validMoves = validMoves(startPosition);
+        if (validMoves == null) {
+            throw new InvalidMoveException("Valid moves is null");
+        }
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move");
+        }
+
+        // movement logic
+        // move to new position
+        board.addPiece(endPosition, movingPiece);
+        // delete old piece
+        board.addPiece(startPosition, null);
+
+        // Pawn promotion
+        if (move.getPromotionPiece() != null && movingPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            movingPiece = new ChessPiece(color, move.getPromotionPiece());
+            board.addPiece(endPosition, movingPiece);
+        }
+
+        // switch to other team
+        color = (color == TeamColor.BLACK) ? TeamColor.WHITE : TeamColor.BLACK;
     }
 
     /**
@@ -97,7 +137,43 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece king = null;
+        ChessPosition kingPosition = null;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    king = piece;
+                    kingPosition = position;
+                    break;
+                }
+            }
+        }
+
+        if (king == null) {
+            return false; // this should never happen
+        }
+
+        // See if any piece can attack the king
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    List<ChessMove> moves = (List<ChessMove>) piece.pieceMoves(board, position);
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

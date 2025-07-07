@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -77,7 +78,32 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+        List<ChessMove> pieceMoves = (List<ChessMove>) piece.pieceMoves(board, startPosition);
+        List<ChessMove> validPieceMoves = new ArrayList<>();
+
+        for (ChessMove move : pieceMoves) {
+            ChessPosition endPosition = move.getEndPosition();
+
+            // save captured pieces
+            ChessPiece capturedPiece = board.getPiece(endPosition);
+
+            board.addPiece(endPosition, piece);
+            board.addPiece(startPosition, null);
+
+            if (!isInCheck(piece.getTeamColor())) {
+                validPieceMoves.add(move);
+            }
+
+            // reset the board
+            board.addPiece(startPosition, piece);
+            board.addPiece(endPosition, capturedPiece);
+        }
+
+        return validPieceMoves;
     }
 
     /**
@@ -183,7 +209,109 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // Returns true if the given team has no way to protect their king from being captured.
+        ChessPiece king = null;
+        ChessPosition kingPosition = null;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    king = piece;
+                    kingPosition = position;
+                    break;
+                }
+            }
+        }
+
+        if (king == null) {
+            return false; // this should never happen
+        }
+
+
+        // see if any other pieces can save the day before king gets shrecked
+        List<ChessMove> helperMoves = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null) {
+                    if (piece.getTeamColor()==teamColor) {
+                        if (piece.getPieceType() != ChessPiece.PieceType.KING) {
+                            helperMoves = (List<ChessMove>) piece.pieceMoves(board, position);
+                        }
+                    }
+                }
+            }
+        }
+        for (ChessMove move : helperMoves) {
+
+            ChessPiece PieceAtTarget =  board.getPiece(move.getEndPosition());
+            if (PieceAtTarget != null) {
+                board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+            }
+
+        }
+        // see if king can capture
+        List<ChessMove> king_moves = (List<ChessMove>) king.pieceMoves(board, kingPosition);
+        for (ChessMove k_move : king_moves) {
+            ChessPosition end_move = k_move.getEndPosition();
+            ChessPiece PieceAtTarget =  board.getPiece(end_move);
+            if (PieceAtTarget != null) {
+                if (PieceAtTarget.getTeamColor() != teamColor) {
+                    // check to see if enemy can still capture
+
+                    for (int row = 1; row <= 8; row++) {
+                        for (int col = 1; col <= 8; col++) {
+                            ChessPosition position = new ChessPosition(row, col);
+                            ChessPiece piece = board.getPiece(position);
+                            List<ChessMove> moves = new ArrayList<>();
+                            if (piece != null) {
+                                if (piece.getTeamColor()!=teamColor) {
+                                    ChessBoard upBoard = board;
+                                    upBoard.addPiece(end_move, king);
+                                    moves = (List<ChessMove>) piece.pieceMoves(upBoard, position);
+
+
+
+                                    System.out.println(moves);
+                                }
+                                for (ChessMove move : moves) {
+                                    if (move.getEndPosition().equals(end_move)) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+            }
+        }
+        // See if any piece can attack the king
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if (piece != null) {
+                    List<ChessMove> moves = (List<ChessMove>) piece.pieceMoves(board, position);
+
+                    for (ChessMove move : moves) {
+
+                        if (move.getEndPosition().equals(kingPosition)) {
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -11,6 +12,8 @@ import java.util.Collection;
 public class ChessGame {
 //    private ChessPiece piece;
     private TeamColor color;
+    private ChessBoard board;
+    private ChessPiece currentPiece;
     public ChessGame() {
         ChessBoard board = new ChessBoard();
         board.resetBoard();
@@ -33,6 +36,29 @@ public class ChessGame {
     public void setTeamTurn(TeamColor team) {
 //        this.color = team;
         throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return color == chessGame.color && Objects.equals(board, chessGame.board) && Objects.equals(currentPiece, chessGame.currentPiece);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, board, currentPiece);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "color=" + color +
+                ", board=" + board +
+                ", currentPiece=" + currentPiece +
+                '}';
     }
 
     /**

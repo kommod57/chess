@@ -25,6 +25,8 @@ public class ChessGame {
     private boolean blackLeftRookMoved = false;
     private boolean blackRightRookMoved = false;
 
+    // En Passant
+    private ChessPosition enPassantVulnerablePawn = null;
 
     public ChessGame() {
         this.board = new ChessBoard();
@@ -273,6 +275,25 @@ public class ChessGame {
         }
 
         // movement logic
+
+        // en passant (only when pawns move 2 spaces)
+        if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+        Math.abs(endPosition.getRow() - startPosition.getRow()) == 2) {
+            enPassantVulnerablePawn = endPosition;
+        } else {
+            enPassantVulnerablePawn = null;
+        }
+
+        // End passant capture
+        if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+        endPosition.getColumn() != startPosition.getColumn() &&
+        board.getPiece(endPosition) == null) {
+            // Weird capture here
+            int capturedPawnRow = (color == TeamColor.WHITE) ? endPosition.getRow() - 1 : endPosition.getRow() + 1;
+            ChessPosition capturedPawnPos = new ChessPosition(capturedPawnRow, endPosition.getColumn());
+            board.addPiece(capturedPawnPos, null); // pawn dies
+        }
+
         // move to new position
         board.addPiece(endPosition, movingPiece);
         // delete old piece

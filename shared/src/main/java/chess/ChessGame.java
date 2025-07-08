@@ -220,6 +220,34 @@ public class ChessGame {
                 validPieceMoves.add(move);
             }
 
+            // En passant
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && enPassantVulnerablePawn != null) {
+                int startRow = startPosition.getRow();
+                int startCol = startPosition.getColumn();
+                int targetRow = enPassantVulnerablePawn.getRow();
+                int targetCol = enPassantVulnerablePawn.getColumn();
+
+                // see if en passant pawn is adjacent in column
+                if (Math.abs(startCol - targetCol) == 1) {
+                    // Pawn must be on rank 5 capturing down
+                    ChessPosition endPos = new ChessPosition(6, targetCol); // capture des
+
+                    // simulate move
+                    ChessPiece captured = board.getPiece(enPassantVulnerablePawn);
+                    board.addPiece(startPosition, null);
+                    board.addPiece(endPos, piece);
+                    board.addPiece(enPassantVulnerablePawn, null); // dead captured pawn
+                    if (!isInCheck(piece.getTeamColor())) {
+                        validPieceMoves.add(new ChessMove((startPosition, endPos, null)))
+                    }
+                    // reset board
+                    board.addPiece(startPosition, piece);
+                    board.addPiece(enPassantVulnerablePawn, captured);
+                    board.addPiece(endPos, null);
+                }
+
+            }
+
             // reset the board
             board.addPiece(startPosition, piece);
             board.addPiece(endPosition, capturedPiece);
@@ -237,13 +265,17 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
-
         ChessPiece movingPiece = board.getPiece(startPosition);
 
         if (movingPiece == null) {
             throw new InvalidMoveException("No piece at starting position.");
         }
-        // Handle castling separately
+        // correct teams turn
+        if (movingPiece.getTeamColor() != color) {
+            throw new InvalidMoveException("Wrong team's turn");
+        }
+
+        // Handle castling
         boolean isCastlingMove = isCastlingMove(movingPiece, startPosition, endPosition);
         if (isCastlingMove) {
             castling(movingPiece.getTeamColor(), startPosition, endPosition);
@@ -255,12 +287,6 @@ public class ChessGame {
         if (isInCheck(getTeamTurn())) {
             throw new InvalidMoveException("Checked");
         }
-//        if (isInCheckmate(getTeamTurn())) {
-//            throw new InvalidMoveException("Checkmate");
-//        }
-//        if (isInStalemate(getTeamTurn())) {
-//            throw new InvalidMoveException("Stalemate");
-//        }
 
         if (movingPiece == null || movingPiece.getTeamColor() != color) {
             throw new InvalidMoveException("Invalid move");
@@ -276,15 +302,8 @@ public class ChessGame {
 
         // movement logic
 
-        // en passant (only when pawns move 2 spaces)
-        if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
-        Math.abs(endPosition.getRow() - startPosition.getRow()) == 2) {
-            enPassantVulnerablePawn = endPosition;
-        } else {
-            enPassantVulnerablePawn = null;
-        }
 
-        // End passant capture
+        // En passant capture
         if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
         endPosition.getColumn() != startPosition.getColumn() &&
         board.getPiece(endPosition) == null) {
@@ -298,6 +317,14 @@ public class ChessGame {
         board.addPiece(endPosition, movingPiece);
         // delete old piece
         board.addPiece(startPosition, null);
+
+
+        // Pawn promotion
+        if (move.getPromotionPiece() != null && movingPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            movingPiece = new ChessPiece(color, move.getPromotionPiece());
+            board.addPiece(endPosition, movingPiece);
+        }
+
 
         // update moved flags for king or rook
         if (movingPiece.getPieceType() == ChessPiece.PieceType.KING) {
@@ -315,14 +342,24 @@ public class ChessGame {
             }
         }
 
-        // Pawn promotion
-        if (move.getPromotionPiece() != null && movingPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            movingPiece = new ChessPiece(color, move.getPromotionPiece());
-            board.addPiece(endPosition, movingPiece);
+
+        // Track En Passant
+        if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+        Math.abs(endPosition.getRow() - startPosition.getRow()) == 2) {
+            enPassantVulnerablePawn = endPosition;
+        } else {
+            enPassantVulnerablePawn = null;
         }
 
         // switch to other team
         color = (color == TeamColor.BLACK) ? TeamColor.WHITE : TeamColor.BLACK;
+    }
+
+    public void setEnPassantVulnerablePawn(ChessPosition pos) {
+        this.enPassantVulnerablePawn = pos;
+    }
+    public ChessPosition getEnPassantVulnerablePawn() {
+        return this.enPassantVulnerablePawn;
     }
 
     /**

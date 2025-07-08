@@ -322,7 +322,90 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //Returns true if the given team has no legal moves but their king is not in immediate danger.
+        if (!isInCheckmate(teamColor))
+        {
+            // check if it can make a legal move
+            ChessPosition kingPosition = null;
+
+            for (int row = 1; row <= 8; row++) {
+                for (int col = 1; col <= 8; col++) {
+                    ChessPosition position = new ChessPosition(row, col);
+                    ChessPiece piece = board.getPiece(position);
+
+                    if (piece != null && piece.getTeamColor() == teamColor &&
+                            piece.getPieceType() == ChessPiece.PieceType.KING) {
+                        kingPosition = position;
+                        break;
+                    }
+                }
+            }
+
+            List<ChessMove> enemy_moves = new ArrayList<>();
+
+            for (int row = 1; row <= 8; row++) {
+                for (int col = 1; col <= 8; col++) {
+                    ChessPosition position = new ChessPosition(row, col);
+                    ChessPiece piece = board.getPiece(position);
+
+                    if (piece != null) {
+                        if (piece.getTeamColor() != teamColor) {
+                            enemy_moves = (List<ChessMove>) piece.pieceMoves(board, position);
+                        }
+
+                    }
+                }
+            }
+            assert kingPosition != null;
+            ChessPiece king_piece = board.getPiece(kingPosition);
+            List<ChessMove> king_moves = (List<ChessMove>) king_piece.pieceMoves(board, kingPosition);
+            for (ChessMove k_move : king_moves) {
+                for (ChessMove e_move : enemy_moves) {
+                    if (k_move.equals(e_move)) {
+                        return true;
+                    }
+                }
+            }
+            // check to see if king is pinned
+            int validMoves = king_moves.size();
+            int kingHitHere = 0;
+            boolean nextMove = true;
+            for (ChessMove k_move : king_moves) {
+                nextMove = true;
+                for (int row = 1; row <= 8; row++) {
+                    for (int col = 1; col <= 8; col++) {
+                        ChessPosition position = new ChessPosition(row, col);
+
+                        ChessPiece piece = board.getPiece(position);
+                        List<ChessMove> moves = new ArrayList<>();
+                        if (piece != null) {
+                            if (piece.getTeamColor()!=teamColor){
+                                moves = (List<ChessMove>) piece.pieceMoves(board, position);
+                            }
+                            for (ChessMove move : moves) {
+                                if (move.getEndPosition().equals(k_move.getEndPosition())) {
+                                    if (nextMove){
+                                        kingHitHere += 1;
+                                        nextMove = false;
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println(kingHitHere + " " + validMoves);
+            return kingHitHere >= validMoves && kingHitHere != 0;
+
+//            assert kingPosition != null;
+//            ChessPiece king_piece = board.getPiece(kingPosition);
+//
+//            List<ChessMove> king_moves = (List<ChessMove>) king_piece.pieceMoves(board, kingPosition);
+//            return king_moves.isEmpty();
+        }
+        return false;
     }
 
     /**
@@ -331,7 +414,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -340,6 +423,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 }

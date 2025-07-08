@@ -35,8 +35,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-//        this.color = team;
-        throw new RuntimeException("Not implemented");
+        this.color = team;
     }
 
     @Override

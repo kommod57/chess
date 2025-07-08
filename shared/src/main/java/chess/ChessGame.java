@@ -230,22 +230,38 @@ public class ChessGame {
                 // see if en passant pawn is adjacent in column
                 if (Math.abs(startCol - targetCol) == 1) {
                     // Pawn must be on rank 5 capturing down
-                    ChessPosition endPos = new ChessPosition(6, targetCol); // capture des
-
-                    // simulate move
-                    ChessPiece captured = board.getPiece(enPassantVulnerablePawn);
-                    board.addPiece(startPosition, null);
-                    board.addPiece(endPos, piece);
-                    board.addPiece(enPassantVulnerablePawn, null); // dead captured pawn
-                    if (!isInCheck(piece.getTeamColor())) {
-                        validPieceMoves.add(new ChessMove((startPosition, endPos, null)))
+                    if (piece.getTeamColor() == TeamColor.WHITE && startRow == 5 && targetRow == 5) {
+                        ChessPosition endPos = new ChessPosition(6, targetCol); // capture des
+                        // simulate move
+                        ChessPiece captured = board.getPiece(enPassantVulnerablePawn);
+                        board.addPiece(startPosition, null);
+                        board.addPiece(endPos, piece);
+                        board.addPiece(enPassantVulnerablePawn, null); // dead captured pawn
+                        if (!isInCheck(piece.getTeamColor())) {
+                            validPieceMoves.add(new ChessMove(startPosition, endPos, null));
+                        }
+                        // reset board
+                        board.addPiece(startPosition, piece);
+                        board.addPiece(enPassantVulnerablePawn, captured);
+                        board.addPiece(endPos, null);
                     }
-                    // reset board
-                    board.addPiece(startPosition, piece);
-                    board.addPiece(enPassantVulnerablePawn, captured);
-                    board.addPiece(endPos, null);
+                    // black pawn must be rank 4 going up
+                    else if (piece.getTeamColor() == TeamColor.BLACK && startRow == 4 && targetRow == 4) {
+                        ChessPosition endPos = new ChessPosition(3, targetCol); // capture des
+                        // simulate move
+                        ChessPiece captured = board.getPiece(enPassantVulnerablePawn);
+                        board.addPiece(startPosition, null);
+                        board.addPiece(endPos, piece);
+                        board.addPiece(enPassantVulnerablePawn, null); // dead captured pawn
+                        if (!isInCheck(piece.getTeamColor())) {
+                            validPieceMoves.add(new ChessMove(startPosition, endPos, null));
+                        }
+                        // reset board
+                        board.addPiece(startPosition, piece);
+                        board.addPiece(enPassantVulnerablePawn, captured);
+                        board.addPiece(endPos, null);
+                    }
                 }
-
             }
 
             // reset the board

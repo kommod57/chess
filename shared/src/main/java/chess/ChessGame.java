@@ -16,6 +16,16 @@ public class ChessGame {
     private TeamColor color;
     private ChessBoard board;
     private ChessPiece currentPiece;
+
+    // For castling
+    private boolean whitKingMoved = false;
+    private boolean blackKingMoved = false;
+    private boolean whiteLeftRookMoved = false;
+    private boolean whiteRightRookMoved = false;
+    private boolean blackLeftRookMoved = false;
+    private boolean blackRightRookMoved = false;
+
+
     public ChessGame() {
         this.board = new ChessBoard();
         this.board.resetBoard();
@@ -69,6 +79,15 @@ public class ChessGame {
         BLACK
     }
 
+    private boolean isCastlingMove(ChessPiece piece, ChessPosition start, ChessPosition end) {
+        if (piece.getPieceType() != ChessPiece.PieceType.KING) return false;
+
+        int row = start.getRow();
+        int colDiff = end.getColumn() - start.getColumn();
+
+        return row == end.getRow() && (colDiff == 2 || colDiff == -2);
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -76,6 +95,7 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
+
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
         if (piece == null) {
@@ -89,6 +109,9 @@ public class ChessGame {
 
             // save captured pieces
             ChessPiece capturedPiece = board.getPiece(endPosition);
+
+            //casting check
+            adsasd
 
             board.addPiece(endPosition, piece);
             board.addPiece(startPosition, null);

@@ -129,11 +129,11 @@ public class ChessPiece {
             if(getTeamColor() == ChessGame.TeamColor.BLACK && row == 8) {
                 // kingSide castling (white): col5 to col7, rook at col8
                 if (canCastle(board, 8, 5, 6, 7, 8)) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(1,7), null));
+                    moves.add(new ChessMove(myPosition, new ChessPosition(8,7), null));
                 }
                 // queenSide castling(white): col5 to col3, rook at col1
                 if (canCastle(board, 8, 5, 4, 3, 2, 1)) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(1,3), null));
+                    moves.add(new ChessMove(myPosition, new ChessPosition(8,3), null));
                 }
 
             }

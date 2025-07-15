@@ -88,7 +88,7 @@ public class ChessPiece {
       return rook != null &&
               rook.getPieceType() == PieceType.ROOK &&
               rook.getTeamColor() == this.getTeamColor();
-    };
+    }
 
     /**
      * Calculates all the positions a chess piece can move to

@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.security.LoginService;
 import spark.Request;
 import spark.Response;
-import spark.Route;
-import service.LoginService;
-import model.request.LoginRequest;
+import model.request.LoginRequest.LoginRequest;
 import model.response.LoginResponse;
 
 

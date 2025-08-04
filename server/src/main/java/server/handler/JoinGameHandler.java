@@ -1,13 +1,14 @@
 package server.handler;
 
 import com.google.gson.Gson;
+import service.JoinGameService;
 import spark.Request;
 import spark.Response;
 import model.request.LoginRequest.LoginRequest;
 import model.response.LoginResponse;
 
 
-public class JoinGameHandler {
+public class JoinGameHandler implements spark.Route{
     @Override
     public Object handle(Request req, Response res) {
         Gson gson = new Gson();

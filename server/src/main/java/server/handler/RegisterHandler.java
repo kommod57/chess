@@ -7,7 +7,7 @@ import model.request.RegisterRequest;
 import model.response.RegisterResponse;
 
 
-public class RegisterHandler {
+public class RegisterHandler implements spark.Route{
     @Override
     public Object handle(Request req, Response res) {
         Gson gson = new Gson();

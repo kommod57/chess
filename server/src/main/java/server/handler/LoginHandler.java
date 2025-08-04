@@ -9,7 +9,7 @@ import model.response.LoginResponse;
 
 
 
-public class LoginHandler {
+public class LoginHandler implements spark.Route{
     public Object handle(Request req, Response res) {
         Gson gson = new Gson();
         LoginRequest request = gson.fromJson(req.body(), LoginRequest.class);

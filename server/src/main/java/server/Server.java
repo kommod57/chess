@@ -8,13 +8,13 @@ public class Server {
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
-        Spark.delete("/db", (Route) new ClearHandler());
-        Spark.post("/user", (Route) new RegisterHandler());
-        Spark.post("/session", (Route) new LoginHandler());
-        Spark.delete("/session", (Route) new LogoutHandler());
-        Spark.get("/game", (Route) new ListGamesHandler());
-        Spark.post("/game", (Route) new CreateGameHandler());
-        Spark.put("/game", (Route) new JoinGameHandler());
+        Spark.delete("/db", new ClearHandler());
+        Spark.post("/user", new RegisterHandler());
+        Spark.post("/session", new LoginHandler());
+        Spark.delete("/session", new LogoutHandler());
+        Spark.get("/game", new ListGamesHandler());
+        Spark.post("/game", new CreateGameHandler());
+        Spark.put("/game", new JoinGameHandler());
 
         Spark.staticFiles.location("web");
 

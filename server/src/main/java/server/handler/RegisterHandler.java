@@ -3,8 +3,8 @@ package server.handler;
 import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
-import model.request.LoginRequest.LoginRequest;
-import model.response.LoginResponse;
+import model.request.RegisterRequest;
+import model.response.RegisterResponse;
 
 
 public class RegisterHandler {

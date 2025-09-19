@@ -27,7 +27,6 @@ public class ChessPiece {
         ChessPiece that = (ChessPiece) o;
         return pieceColor == that.pieceColor && type == that.type;
     }
-    
 
     @Override
     public int hashCode() {

@@ -19,7 +19,7 @@ public class ChessPiece {
         this.type = type;
     }
 
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -29,6 +29,7 @@ public class ChessPiece {
         return pieceColor == that.pieceColor && type == that.type;
     }
 
+    
     @Override
     public int hashCode() {
         return Objects.hash(pieceColor, type);

@@ -102,7 +102,63 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece movingPiece = board.getPiece(startPosition);
+
+        if (movingPiece == null) {
+            throw new InvalidMoveException("No piece at starting pos");
+        }
+        if (movingPiece.getTeamColor() != color) {
+            throw new InvalidMoveException("Wrong team's turn");
+        }
+
+        // Castling
+
+        if (! isInCheck(getTeamTurn())) {
+            throw new InvalidMoveException("Checked");
+        }
+
+        if (movingPiece == null || movingPiece.getTeamColor() != color) {
+            throw new InvalidMoveException("Invalid move");
+        }
+
+        Collection<ChessMove> validMoves = validMoves(startPosition);
+        if (validMoves == null) {
+            throw new InvalidMoveException("Invalid move");
+
+        }
+
+        // movement logic
+
+        // En passant
+
+        // move to new position
+        board.addPiece(endPosition, movingPiece);
+        //delete
+        board.addPiece(startPosition, null);
+
+        // pawn promotion
+        if (move.getPromotionPiece() != null && movingPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            movingPiece = new ChessPiece(color, move.getPromotionPiece());
+            board.addPiece(endPosition, movingPiece);
+        }
+
+        // king and rook movement flags
+        if (movingPiece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (color == TeamColor.WHITE) {
+                whitKingMoved = true;
+            }
+            else {
+                blackKingMoved = true;
+            }
+        } else if (movingPiece.getPieceType() == ChessPiece.PieceType.ROOK) {
+            int row = startPosition.getRow();
+            int col = startPosition.getColumn();
+            if (color == TeamColor.WHITE) {
+                if (row == 1 && c)
+            }
+        }
     }
 
     /**

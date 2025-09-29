@@ -9,7 +9,21 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    //    private ChessPiece piece;
+    private TeamColor color;
+    private ChessBoard board;
+    private ChessPiece currentPiece;
 
+    // For castling
+    private boolean whitKingMoved = false;
+    private boolean blackKingMoved = false;
+    private boolean whiteLeftRookMoved = false;
+    private boolean whiteRightRookMoved = false;
+    private boolean blackLeftRookMoved = false;
+    private boolean blackRightRookMoved = false;
+
+    // En Passant
+    private ChessPosition enPassantVulnerablePawn = null;
     public ChessGame() {
 
     }

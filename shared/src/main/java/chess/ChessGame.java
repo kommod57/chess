@@ -25,7 +25,6 @@ public class ChessGame {
     private boolean whiteRightRookMoved = false;
     private boolean blackLeftRookMoved = false;
     private boolean blackRightRookMoved = false;
-
     // En Passant
     private ChessPosition enPassantVulnerablePawn = null;
 

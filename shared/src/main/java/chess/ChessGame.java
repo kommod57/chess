@@ -34,7 +34,7 @@ public class ChessGame {
         this.board.resetBoard();
         this.color = TeamColor.WHITE;
     }
-    
+
     /**
      * @return Which team's turn it is
      */
